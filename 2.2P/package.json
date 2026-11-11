@@ -1,12 +1,23 @@
 {
-  "name": "2.2p",
+  "name": "sit725-2026-t3-2.2P",
   "version": "1.0.0",
-  "description": "completing task 2.2P for SIT725",
-  "license": "ISC",
-  "author": "",
+  "description": "completing task 2.2P for SIT725 by Mohammad Zoubai",
+  "license": "MIT",
+  "author": "Mohammad Zoubai",
   "type": "commonjs",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MDZoubai/SIT725_s226617126/2.2P.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MDZoubai/SIT725_s226617126/2.2P/issues"
+  },
+  "homepage": "https://github.com/MDZoubai/SIT725_s226617126/2.2P#readme",
+  "dependencies": {
+    "express": "^5.3.0"
   }
 }
