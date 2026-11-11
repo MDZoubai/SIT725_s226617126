@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculator Web Service - SIT725</title>
+  <style>
+    /* Centre container and apply clean typography */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f6f8;
+      color: #333333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+
+    /* Card styling to organise interactive components */
+    .calculator-card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 440px;
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 1.5rem;
+      text-align: center;
+      color: #1a365d;
+    }
+
+    p.description {
+      text-align: center;
+      color: #666666;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    input[type="number"], select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #cccccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 1rem;
+    }
+
+    /* Button layout to organise user interactions */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      background-color: #0066cc;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #004c99;
+    }
+
+    button.secondary-btn {
+      background-color: #4a5568;
+    }
+
+    button.secondary-btn:hover {
+      background-color: #2d3748;
+    }
+
+    /* Output display area */
+    #outputContainer {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 4px;
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      display: none;
+    }
+
+    .output-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #2d3748;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+
+    .status-success {
+      border-left: 4px solid #38a169;
+    }
+
+    .status-error {
+      border-left: 4px solid #e53e3e;
+      background-color: #fff5f5;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main container card to organise user interface components -->
+  <div class="calculator-card">
+    <h1>Calculator Web Service Mohammad Zoubai s226617126</h1>
+    <p class="description">Test server-side REST API calculations using Express GET &amp; POST requests.</p>
+
+    <!-- Input for first number (a) -->
+    <div class="form-group">
+      <label for="numA">First Number (a):</label>
+      <input type="number" id="numA" step="any" placeholder="Enter first number (e.g. 10)">
+    </div>
+
+    <!-- Input for second number (b) -->
+    <div class="form-group">
+      <label for="numB">Second Number (b):</label>
+      <input type="number" id="numB" step="any" placeholder="Enter second number (e.g. 5)">
+    </div>
+
+    <!-- Operation selector for additional calculations -->
+    <div class="form-group">
+      <label for="operationSelect">Operation:</label>
+      <select id="operationSelect">
+        <option value="add">Addition (+)</option>
+        <option value="subtract">Subtraction (-)</option>
+        <option value="multiply">Multiplication (*)</option>
+        <option value="divide">Division (/)</option>
+      </select>
+    </div>
+
+    <!-- Interactive calculation buttons -->
+    <div class="button-group">
+      <!-- Main button to add two numbers via GET request -->
+      <button id="addBtn" type="button">Add Numbers (GET)</button>
+      <!-- Secondary button to perform selected calculation via POST request -->
+      <button id="postBtn" type="button" class="secondary-btn">Calculate (POST)</button>
+    </div>
+
+    <!-- Output container to display server response -->
+    <div id="outputContainer">
+      <div class="output-title" id="outputStatus">Server Response:</div>
+      <pre id="outputContent"></pre>
+    </div>
+  </div>
+
+  <script>
+    // Initialise Document Object Model element references
+    const inputA = document.getElementById('numA');
+    const inputB = document.getElementById('numB');
+    const operationSelect = document.getElementById('operationSelect');
+    const addBtn = document.getElementById('addBtn');
+    const postBtn = document.getElementById('postBtn');
+    const outputContainer = document.getElementById('outputContainer');
+    const outputStatus = document.getElementById('outputStatus');
+    const outputContent = document.getElementById('outputContent');
+
+    // Helper function to render formatted response in output container
+    function displayResponse(isSuccess, data) {
+      // Make the output container visible
+      outputContainer.style.display = 'block';
+
+      // Customise border colour and status message based on response outcome
+      if (isSuccess) {
+        outputContainer.className = 'status-success';
+        outputStatus.textContent = 'Calculation Result (Success):';
+      } else {
+        outputContainer.className = 'status-error';
+        outputStatus.textContent = 'Error Encountered:';
+      }
+
+      // Display the JSON response formatted with indentation
+      outputContent.textContent = JSON.stringify(data, null, 2);
+    }
+
+    // Attach click event listener for primary GET addition button
+    addBtn.addEventListener('click', async () => {
+      // Retrieve numeric string values from input fields
+      const aVal = inputA.value.trim();
+      const bVal = inputB.value.trim();
+
+      // Validate that values were supplied prior to making network request
+      if (aVal === '' || bVal === '') {
+        displayResponse(false, { error: 'Please enter values for both number fields before calculating.' });
+        return;
+      }
+
+      // Construct request URL utilising query parameters 'a' and 'b'
+      const endpointUrl = `/add?a=${encodeURIComponent(aVal)}&b=${encodeURIComponent(bVal)}`;
+
+      try {
+        // Send asynchronous GET request to the Express server
+        const response = await fetch(endpointUrl);
+        const data = await response.json();
+
+        // Display received result utilising helper function
+        displayResponse(response.ok, data);
+      } catch (networkError) {
+        // Handle unexpected communication failure
+        displayResponse(false, { error: 'Failed to communicate with the server.', details: networkError.message });
+      }
+    });
+
+    // Attach click event listener for POST calculation button
+    postBtn.addEventListener('click', async () => {
+      const aVal = inputA.value.trim();
+      const bVal = inputB.value.trim();
+      const selectedOperation = operationSelect.value;
+
+      if (aVal === '' || bVal === '') {
+        displayResponse(false, { error: 'Please enter values for both number fields before calculating.' });
+        return;
+      }
+
+      try {
+        // Send asynchronous POST request with JSON payload in the request body
+        const response = await fetch('/calculate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            a: aVal,
+            b: bVal,
+            operation: selectedOperation
+          })
+        });
+
+        const data = await response.json();
+        displayResponse(response.ok, data);
+      } catch (networkError) {
+        displayResponse(false, { error: 'Failed to send POST request to the server.', details: networkError.message });
+      }
+    });
+  </script>
+</body>
+</html>
