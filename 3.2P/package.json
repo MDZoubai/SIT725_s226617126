@@ -19,5 +19,13 @@
   "homepage": "https://github.com/MDZoubai/SIT725_s226617126/3.2P#readme",
   "dependencies": {
     "express": "^5.3.0"
-  }
+  },
+  "keywords": [
+    "Nodejs",
+    "Express",
+    "Materialize",
+    "HTML",
+    "JS",
+    "CSS"
+  ]
 }
