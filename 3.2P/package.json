@@ -1,0 +1,23 @@
+{
+  "name": "sit725-2026-t3-3.2P",
+  "version": "1.0.0",
+  "description": "completing task 3.2P for SIT725 by Mohammad Zoubai",
+  "license": "MIT",
+  "author": "Mohammad Zoubai",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MDZoubai/SIT725_s226617126/3.2P.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MDZoubai/SIT725_s226617126/3.2P/issues"
+  },
+  "homepage": "https://github.com/MDZoubai/SIT725_s226617126/3.2P#readme",
+  "dependencies": {
+    "express": "^5.3.0"
+  }
+}
